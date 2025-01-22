@@ -14,7 +14,7 @@ public class Phone {
             String[] parts = command.split(" ");
 
             if (parts[0].equals("bye")) {
-                System.out.println("Bye. I miss you a lot already XXX!");
+                System.out.println("Bye. I miss you Jady Myint!");
                 break;
             }
             else if (parts[0].equals("list")) {

@@ -1,12 +1,10 @@
 public class Task {
     private String name;
     private boolean isDone;
-
     public Task(String name) {
         this.name = name;
         this.isDone = false;
     }
-
     protected String getStatus() {
         return this.isDone ? "X" : " ";
     }
@@ -14,6 +12,7 @@ public class Task {
         return this.name;
     }
 
+    protected void setName(String name) { this.name = name; }
     protected void flipDone() {
         this.isDone = !this.isDone;
     }
