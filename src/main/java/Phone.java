@@ -18,6 +18,12 @@ public class Phone {
             String[] parts = input.split(" ", 2);
             command = parts[0];
             String name = parts.length > 1 ? parts[1] : "";
+            while (name.isEmpty()) {
+                System.out.println("Bro how you want me to understand what you mean with " + command + " only?");
+                input = sc.nextLine();
+                parts = input.split(" ", 2);
+                name = parts.length > 1 ? parts[1] : "";
+            }
 
             if (command.equals("bye")) {
                 System.out.println("Bye. I miss you Jady Myint!");
@@ -73,9 +79,11 @@ public class Phone {
                 System.out.println("[ ] " + t.getName());
                 t.flipDone();
             }
+            else if (command.equals("delete")) {
+                
+            }
             else {
-                System.out.println("added: " + command);
-                activities.add(new Task(command));
+                System.out.println("Sorry bro, I'm too high right now to know what means");
             }
         }
         sc.close();
