@@ -18,7 +18,7 @@ public class Phone {
             String[] parts = input.split(" ", 2);
             command = parts[0];
             String name = parts.length > 1 ? parts[1] : "";
-            while (name.isEmpty()) {
+            while (name.isEmpty() && !command.equals("list")) {
                 System.out.println("Bro how you want me to understand what you mean with " + command + " only?");
                 input = sc.nextLine();
                 parts = input.split(" ", 2);
@@ -34,7 +34,15 @@ public class Phone {
                     Task t = activities.get(i);
                     String type = t.getType();
                     String status = t.getStatus();
-                    System.out.println(i + 1 + ".[" + type + "][" + status + "] " + activities.get(i).getName());
+                    String dueDate = "";
+                    String taskName = activities.get(i).getName();
+                    if (type.equals("D")) {
+                        Deadline d = (Deadline) t;
+                        dueDate = " (by: "+ d.getDueDate() + ")";
+                        String[] temp = taskName.split("/by", 2);
+                        taskName = temp[0].trim();
+                    }
+                    System.out.println(i + 1 + ".[" + type + "][" + status + "] " + taskName + dueDate);
                 }
             }
             else if (command.equals("todo")) {
@@ -54,7 +62,7 @@ public class Phone {
                 Deadline deadline = new Deadline(name, dueDate);
                 activities.add(deadline);
                 System.out.println("Got it. I've added this task:");
-                System.out.println("    [D][ ] " + taskName + " (by: " + dayOfWeek + ")");
+                System.out.println("    [D][ ] " + taskName + " (by: " + dueDate + ")");
                 System.out.println("Now you have " + activities.size() + " tasks in the list.");
             }
             else if (command.equals("event")) {
@@ -80,10 +88,15 @@ public class Phone {
                 t.flipDone();
             }
             else if (command.equals("delete")) {
-                
+                int num = Integer.parseInt(name)-1;
+                Task t = activities.get(num);
+                activities.remove(t);
+                System.out.println("Noted. I've removed this task: ");
+                System.out.println("[" + t.getType() + "]" + "[" + t.getStatus() + "] " + t.getName());
+                System.out.println("Now you have " + activities.size() + " in the list.");
             }
             else {
-                System.out.println("Sorry bro, I'm too high right now to know what means");
+                System.out.println("Sorry bro, I'm too high right now to know what means, you need to be more specific with what you want");
             }
         }
         sc.close();

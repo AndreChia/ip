@@ -5,4 +5,7 @@ public class Deadline extends Task{
         super(name);
         this.dueDate = dueDate;
     }
+    protected String getDueDate() {
+        return this.dueDate;
+    }
 }
