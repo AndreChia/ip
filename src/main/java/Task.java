@@ -12,6 +12,16 @@ public class Task {
         return this.name;
     }
 
+    protected String getType() {
+        if (this instanceof ToDo)
+            return "T";
+        else if (this instanceof Deadline)
+            return "D";
+        else if (this instanceof Event)
+            return "E";
+        return "unknown";
+    }
+
     protected void setName(String name) { this.name = name; }
     protected void flipDone() {
         this.isDone = !this.isDone;
