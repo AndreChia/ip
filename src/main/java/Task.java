@@ -1,37 +1,66 @@
-public class    Task {
+/**
+ * Represents a general task.
+ */
+public abstract class Task {
     private String name;
     private boolean isDone;
 
+    /**
+     * Constructor for Task.
+     *
+     * @param name Task name.
+     */
     public Task(String name) {
         this.name = name;
         this.isDone = false;
     }
 
-    protected String getStatus() {
-        return this.isDone ? "X" : " ";
+    /**
+     * Returns the status icon (X for done, space for not done).
+     *
+     * @return Status icon as a string.
+     */
+    public String getStatus() {
+        return isDone ? "X" : " ";
     }
 
-    protected String getName() {
-        return this.name;
+    /**
+     * Returns the task name.
+     *
+     * @return Task name.
+     */
+    public String getName() {
+        return name;
     }
 
-    protected String getType() {
-        if (this instanceof ToDo) return "T";
-        if (this instanceof Deadline) return "D";
-        if (this instanceof Event) return "E";
-        return "unknown";
-    }
+    /**
+     * Returns the task type (T, D, E).
+     *
+     * @return Task type.
+     */
+    public abstract String getType();
 
-    protected void setName(String name) {
-        this.name = name;
-    }
-
-    protected void flipDone() {
+    /**
+     * Toggles the completion status of the task.
+     */
+    public void flipDone() {
         this.isDone = !this.isDone;
     }
 
-    // Convert task into a format for saving in the file
-    public String toFileFormat() {
-        return getType() + " | " + (isDone ? "1" : "0") + " | " + name;
+    /**
+     * Converts the task to a human-readable string.
+     *
+     * @return Formatted string representation.
+     */
+    @Override
+    public String toString() {
+        return "[" + getType() + "][" + getStatus() + "] " + name;
     }
+
+    /**
+     * Converts the task to a format suitable for saving in a file.
+     *
+     * @return Formatted string for storage.
+     */
+    public abstract String toFileFormat();
 }
