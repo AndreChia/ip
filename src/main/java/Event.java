@@ -15,4 +15,9 @@ public class Event extends Task {
     protected String getEndTime() {
         return this.endTime;
     }
+
+    @Override
+    public String toFileFormat() {
+        return "E | " + (getStatus().equals("X") ? "1" : "0") + " | " + getName() + " | " + startTime + " | " + endTime;
+    }
 }
