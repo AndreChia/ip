@@ -1,11 +1,10 @@
-package phone;
-
-import org.junit.jupiter.api.Test;
+import phone.TaskList;
 import phone.task.Task;
 import phone.task.ToDo;
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.testng.AssertJUnit.assertEquals;
+import org.testng.annotations.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 class TaskListTest {
     @Test
