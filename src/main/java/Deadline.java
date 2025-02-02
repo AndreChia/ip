@@ -9,4 +9,9 @@ public class Deadline extends Task {
     protected String getDueDate() {
         return this.dueDate;
     }
+
+    @Override
+    public String toFileFormat() {
+        return "D | " + (getStatus().equals("X") ? "1" : "0") + " | " + getName() + " | " + dueDate;
+    }
 }

@@ -10,7 +10,7 @@ public class Phone {
     public static void main(String[] args) {
         System.out.println("Hello! I'm PHONE\nWhat can I do for you?");
         Scanner sc = new Scanner(System.in);
-        List<Task> activities = new ArrayList<>();
+        List<Task> activities = Storage.loadTasks(); // Load saved tasks from file
 
         while (true) {
             String input = sc.nextLine().trim();
@@ -39,14 +39,14 @@ public class Phone {
                         String dueDate = "";
                         String taskName = t.getName();
 
-                        // If it's a deadline, show the due date
-                        if (type.equals("D")) {
+                        if (t instanceof Deadline) {
                             Deadline d = (Deadline) t;
                             dueDate = " (by: " + d.getDueDate() + ")";
-                            // If your name field contains "/by", remove it from printing
-                            String[] temp = taskName.split("/by", 2);
-                            taskName = temp[0].trim();
+                        } else if (t instanceof Event) {
+                            Event e = (Event) t;
+                            dueDate = " (from: " + e.getStartTime() + " to: " + e.getEndTime() + ")";
                         }
+
                         System.out.println((i + 1) + ".[" + type + "][" + status + "] " + taskName + dueDate);
                     }
                 }
@@ -54,112 +54,101 @@ public class Phone {
 
             else if (command.equals("todo")) {
                 if (name.isEmpty()) {
-                    System.out.println("Bro, you have to specify what the todo is e.g., 'todo borrow book'");
+                    System.out.println("Bro, you have to specify what the todo is.");
                     continue;
                 }
                 ToDo todo = new ToDo(name);
                 activities.add(todo);
-                System.out.println("Got it. I've added this task:");
-                System.out.println("    [T][ ] " + todo.getName());
-                System.out.println("Now you have " + activities.size() + " tasks in the list.");
+                Storage.saveTasks(activities); // Save after adding
+                System.out.println("Got it. I've added this task:\n    [T][ ] " + todo.getName());
             }
 
             else if (command.equals("deadline")) {
-                // Must contain "/by", or it’s invalid
                 if (!name.contains("/by")) {
-                    System.out.println(
-                            "Invalid deadline format. Use 'deadline <desc> /by <DayOfWeek>' e.g., 'deadline return book /by Sunday'");
+                    System.out.println("Invalid format. Use 'deadline <desc> /by <DayOfWeek>' e.g., 'deadline return book /by Sunday'");
                     continue;
                 }
                 try {
-                    // e.g.: "deadline return book /by Sunday"
                     String[] deadlineParts = name.split("/by");
-                    String taskName = deadlineParts[0].trim(); // "return book"
-                    String dayOfWeekStr = deadlineParts[1].trim(); // "Sunday"
+                    String taskName = deadlineParts[0].trim();
+                    String dayOfWeekStr = deadlineParts[1].trim();
 
                     DayOfWeek day = DayOfWeek.valueOf(dayOfWeekStr.toUpperCase());
                     String dueDate = LocalDate.now()
                             .with(TemporalAdjusters.previousOrSame(day))
                             .format(DateTimeFormatter.ofPattern("MMMM d'th'"));
 
-                    Deadline deadline = new Deadline(name, dueDate);
+                    Deadline deadline = new Deadline(taskName, dueDate);
                     activities.add(deadline);
+                    Storage.saveTasks(activities); // Save after adding
 
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println("    [D][ ] " + taskName + " (by: " + dueDate + ")");
-                    System.out.println("Now you have " + activities.size() + " tasks in the list.");
-
-                } catch (IllegalArgumentException e) {
-                    System.out.println(
-                            "Bro, '" + name + "' is not a valid day of the week. Try something like 'Sunday'.");
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("Something is off with your '/by' format. Try 'deadline <desc> /by Sunday'.");
+                    System.out.println("Got it. I've added this task:\n    [D][ ] " + taskName + " (by: " + dueDate + ")");
+                } catch (Exception e) {
+                    System.out.println("Invalid day format. Use a valid day like 'Sunday'.");
                 }
-            } else if (command.equals("event")) {
+            }
+
+            else if (command.equals("event")) {
                 if (!name.contains("/from") || !name.contains("/to")) {
-                    System.out.println("Invalid event format. Use 'event <desc> /from <start> /to <end>'");
+                    System.out.println("Invalid format. Use 'event <desc> /from <start> /to <end>'");
                     continue;
                 }
                 try {
                     String[] fromSplit = name.split("/from");
-                    String taskName = fromSplit[0].trim(); // e.g. "project meeting"
-
+                    String taskName = fromSplit[0].trim();
                     String[] toSplit = fromSplit[1].split("/to");
-                    String startTime = toSplit[0].trim(); // e.g. "Mon 2pm"
-                    String endTime = toSplit[1].trim(); // e.g. "4pm"
+                    String startTime = toSplit[0].trim();
+                    String endTime = toSplit[1].trim();
 
                     Event event = new Event(taskName, startTime, endTime);
                     activities.add(event);
+                    Storage.saveTasks(activities); // Save after adding
 
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println("    [E][ ] " + event.getName()
+                    System.out.println("Got it. I've added this task:\n    [E][ ] " + event.getName()
                             + " (from: " + startTime + " to: " + endTime + ")");
-                    System.out.println("Now you have " + activities.size() + " tasks in the list.");
+                } catch (Exception e) {
+                    System.out.println("Invalid event format. Use 'event <desc> /from <start> /to <end>'");
+                }
+            }
 
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("Bro, you must provide '/from ... /to ...'. For example:\n"
-                            + "event project meeting /from Mon 2pm /to 4pm");
-                }
-            } else if (command.equals("mark")) {
+            else if (command.equals("mark")) {
                 try {
                     int index = Integer.parseInt(name) - 1;
                     Task t = activities.get(index);
                     t.flipDone();
-                    System.out.println("Nice! I've marked this task as done: ");
-                    System.out.println("[X] " + t.getName());
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid task number. Usage: mark <taskIndex> (e.g., mark 2).");
-                } catch (IndexOutOfBoundsException e) {
-                    System.out.println("Task index out of range. You have only " + activities.size() + " tasks.");
+                    Storage.saveTasks(activities); // Save after marking
+                    System.out.println("Nice! I've marked this task as done: [X] " + t.getName());
+                } catch (Exception e) {
+                    System.out.println("Invalid task number.");
                 }
-            } else if (command.equals("unmark")) {
+            }
+
+            else if (command.equals("unmark")) {
                 try {
                     int index = Integer.parseInt(name) - 1;
                     Task t = activities.get(index);
                     t.flipDone();
-                    System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println("[ ] " + t.getName());
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid task number. Usage: unmark <taskIndex> (e.g., unmark 2).");
-                } catch (IndexOutOfBoundsException e) {
-                    System.out.println("Task index out of range. You have only " + activities.size() + " tasks.");
+                    Storage.saveTasks(activities); // Save after unmarking
+                    System.out.println("OK, I've marked this task as not done yet: [ ] " + t.getName());
+                } catch (Exception e) {
+                    System.out.println("Invalid task number.");
                 }
-            } else if (command.equals("delete")) {
+            }
+
+            else if (command.equals("delete")) {
                 try {
                     int index = Integer.parseInt(name) - 1;
-                    Task t = activities.get(index);
-                    activities.remove(index);
-                    System.out.println("Noted. I've removed this task:");
-                    System.out.println("[" + t.getType() + "][" + t.getStatus() + "] " + t.getName());
-                    System.out.println("Now you have " + activities.size() + " tasks in the list.");
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid task number. Usage: delete <taskIndex> (e.g., delete 3).");
-                } catch (IndexOutOfBoundsException e) {
-                    System.out.println("Task index out of range. You have only " + activities.size() + " tasks.");
+                    Task removedTask = activities.remove(index);
+                    Storage.saveTasks(activities); // Save after deleting
+                    System.out.println("Noted. I've removed this task:\n[" + removedTask.getType() + "][" +
+                            removedTask.getStatus() + "] " + removedTask.getName());
+                } catch (Exception e) {
+                    System.out.println("Invalid task number.");
                 }
-            } else {
-                System.out.println("Sorry bro, I'm too high right now to know what '"
-                        + command + "' means. Try 'todo', 'deadline', etc.");
+            }
+
+            else {
+                System.out.println("Sorry bro, I don't know what '" + command + "' means.");
             }
         }
 
