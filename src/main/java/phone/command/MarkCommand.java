@@ -1,3 +1,10 @@
+package phone.command;
+
+import phone.Storage;
+import phone.TaskList;
+import phone.Ui;
+import phone.task.Task;
+
 /**
  * Handles marking tasks as done.
  */
@@ -5,7 +12,7 @@ public class MarkCommand extends Command {
     private String taskIndex;
 
     /**
-     * Constructor for MarkCommand.
+     * Constructor for phone.command.MarkCommand.
      *
      * @param taskIndex Index of the task to mark.
      */
@@ -24,7 +31,7 @@ public class MarkCommand extends Command {
         } catch (NumberFormatException e) {
             ui.showError("Invalid task number. Usage: mark <taskIndex> (e.g., mark 2).");
         } catch (IndexOutOfBoundsException e) {
-            ui.showError("Task index out of range. You have only " + tasks.size() + " tasks.");
+            ui.showError("phone.task.Task index out of range. You have only " + tasks.size() + " tasks.");
         }
     }
 }

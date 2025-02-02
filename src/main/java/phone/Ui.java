@@ -1,3 +1,5 @@
+package phone;
+
 import java.util.Scanner;
 
 /**
@@ -7,7 +9,7 @@ public class Ui {
     private Scanner scanner;
 
     /**
-     * Constructor for Ui.
+     * Constructor for phone.Ui.
      * Initializes the Scanner.
      */
     public Ui() {

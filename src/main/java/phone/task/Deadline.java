@@ -1,8 +1,10 @@
+package phone.task;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Represents a Deadline task with a due date.
+ * Represents a phone.task.Deadline task with a due date.
  */
 public class Deadline extends Task {
     private LocalDateTime dueDate;
@@ -10,9 +12,9 @@ public class Deadline extends Task {
     private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
 
     /**
-     * Constructor for Deadline.
+     * Constructor for phone.task.Deadline.
      *
-     * @param name    Task name.
+     * @param name    phone.task.Task name.
      * @param dueDate Due date in "yyyy-MM-dd HHmm" format.
      */
     public Deadline(String name, String dueDate) {

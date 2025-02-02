@@ -1,8 +1,10 @@
+package phone.task;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Represents an Event task with a start and end time.
+ * Represents an phone.task.Event task with a start and end time.
  */
 public class Event extends Task {
     private LocalDateTime startTime;
@@ -11,9 +13,9 @@ public class Event extends Task {
     private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
 
     /**
-     * Constructor for Event.
+     * Constructor for phone.task.Event.
      *
-     * @param name      Task name.
+     * @param name      phone.task.Task name.
      * @param startTime Start time in "yyyy-MM-dd HHmm" format.
      * @param endTime   End time in "yyyy-MM-dd HHmm" format.
      */

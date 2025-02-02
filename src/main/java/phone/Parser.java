@@ -1,12 +1,16 @@
+package phone;
+
+import phone.command.*;
+
 /**
  * Parses user input and returns corresponding command.
  */
 public class Parser {
     /**
-     * Parses user input into a Command.
+     * Parses user input into a phone.command.Command.
      *
      * @param userInput The user's input.
-     * @return Corresponding Command.
+     * @return Corresponding phone.command.Command.
      */
     public static Command parse(String userInput) {
         String[] parts = userInput.split(" ", 2);
