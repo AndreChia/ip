@@ -23,7 +23,7 @@ public class Phone {
     }
 
     /**
-     * Runs the chatbot until user exits.
+     * Runs the chatbot until the user exits.
      */
     public void run() {
         ui.showWelcome();
@@ -32,9 +32,15 @@ public class Phone {
         while (!isExit) {
             String fullCommand = ui.readCommand();
             ui.showLine();
-            Command command = Parser.parse(fullCommand);
-            command.execute(tasks, ui, storage);
-            isExit = command.isExit();
+
+            // Pass `tasks` and `ui` to Parser for `find` command support
+            Command command = Parser.parse(fullCommand, tasks, ui);
+
+            if (command != null) {
+                command.execute(tasks, ui, storage);
+                isExit = command.isExit();
+            }
+
             ui.showLine();
         }
     }

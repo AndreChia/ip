@@ -50,6 +50,22 @@ public class TaskList {
     }
 
     /**
+     * Finds tasks that contain a given keyword.
+     *
+     * @param keyword The keyword to search for.
+     * @return A list of matching tasks.
+     */
+    public List<Task> findTasks(String keyword) {
+        List<Task> matchingTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getName().contains(keyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        return matchingTasks;
+    }
+    
+    /**
      * Marks a task as done.
      *
      * @param index Index of the task to mark as done (0-based).

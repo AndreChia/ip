@@ -1,5 +1,8 @@
 package phone;
 
+import phone.task.Task;
+
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -63,4 +66,21 @@ public class Ui {
     public void showMessage(String message) {
         System.out.println(message);
     }
+
+    /**
+     * Displays matching tasks based on search results.
+     *
+     * @param tasks The list of tasks that match the search query.
+     */
+    public void showMatchingTasks(List<Task> tasks) {
+        if (tasks.isEmpty()) {
+            System.out.println("No matching tasks found.");
+        } else {
+            System.out.println("Here are the matching tasks:");
+            for (int i = 0; i < tasks.size(); i++) {
+                System.out.println((i + 1) + ". " + tasks.get(i));
+            }
+        }
+    }
+
 }
