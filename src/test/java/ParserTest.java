@@ -1,9 +1,9 @@
-package phone;
-
 import org.junit.jupiter.api.Test;
+import phone.Parser;
 import phone.command.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.testng.AssertJUnit.assertEquals;
 
 class ParserTest {
     @Test

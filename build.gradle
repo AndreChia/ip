@@ -10,10 +10,7 @@ repositories {
 
 dependencies {
     implementation 'org.testng:testng:7.1.0'
-    implementation 'org.testng:testng:7.1.0'
-    implementation 'junit:junit:4.13.1'
-    implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
 }
 
@@ -31,15 +28,21 @@ test {
     }
 }
 
+
 application {
-    mainClass.set("seedu.duke.Duke")
+    mainClass.set("phone.Phone")
 }
 
 shadowJar {
-    archiveBaseName = "duke"
-    archiveClassifier = null
+    archiveBaseName.set("phone") // ✅ Sets the JAR file name
+    archiveClassifier.set(null)  // ✅ Ensures it’s just "phone.jar" (no extra classifier)
+    archiveVersion.set("")       // ✅ Removes version from filename
+    manifest {
+        attributes 'Main-Class': 'phone.Phone' // ✅ Ensures JAR knows the main class
+    }
 }
 
-run{
+
+run {
     standardInput = System.in
 }
