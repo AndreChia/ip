@@ -1,16 +1,12 @@
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.time.LocalDate;
-import java.time.DayOfWeek;
-import java.time.temporal.TemporalAdjusters;
 
 public class Phone {
     public static void main(String[] args) {
         System.out.println("Hello! I'm PHONE\nWhat can I do for you?");
         Scanner sc = new Scanner(System.in);
-        List<Task> activities = Storage.loadTasks(); // Load saved tasks from file
+        List<Task> activities = Storage.loadTasks(); // Load saved tasks
 
         while (true) {
             String input = sc.nextLine().trim();
@@ -36,18 +32,17 @@ public class Phone {
                         Task t = activities.get(i);
                         String type = t.getType();
                         String status = t.getStatus();
-                        String dueDate = "";
+                        String dateInfo = "";
                         String taskName = t.getName();
 
                         if (t instanceof Deadline) {
-                            Deadline d = (Deadline) t;
-                            dueDate = " (by: " + d.getDueDate() + ")";
+                            dateInfo = " (by: " + ((Deadline) t).getDueDate() + ")";
                         } else if (t instanceof Event) {
                             Event e = (Event) t;
-                            dueDate = " (from: " + e.getStartTime() + " to: " + e.getEndTime() + ")";
+                            dateInfo = " (from: " + e.getStartTime() + " to: " + e.getEndTime() + ")";
                         }
 
-                        System.out.println((i + 1) + ".[" + type + "][" + status + "] " + taskName + dueDate);
+                        System.out.println((i + 1) + ".[" + type + "][" + status + "] " + taskName + dateInfo);
                     }
                 }
             }
@@ -59,55 +54,50 @@ public class Phone {
                 }
                 ToDo todo = new ToDo(name);
                 activities.add(todo);
-                Storage.saveTasks(activities); // Save after adding
+                Storage.saveTasks(activities);
                 System.out.println("Got it. I've added this task:\n    [T][ ] " + todo.getName());
             }
 
             else if (command.equals("deadline")) {
                 if (!name.contains("/by")) {
-                    System.out.println("Invalid format. Use 'deadline <desc> /by <DayOfWeek>' e.g., 'deadline return book /by Sunday'");
+                    System.out.println("Invalid format. Use 'deadline <desc> /by yyyy-MM-dd HHmm'.");
                     continue;
                 }
                 try {
                     String[] deadlineParts = name.split("/by");
                     String taskName = deadlineParts[0].trim();
-                    String dayOfWeekStr = deadlineParts[1].trim();
+                    String dueDateStr = deadlineParts[1].trim();
 
-                    DayOfWeek day = DayOfWeek.valueOf(dayOfWeekStr.toUpperCase());
-                    String dueDate = LocalDate.now()
-                            .with(TemporalAdjusters.previousOrSame(day))
-                            .format(DateTimeFormatter.ofPattern("MMMM d'th'"));
-
-                    Deadline deadline = new Deadline(taskName, dueDate);
+                    Deadline deadline = new Deadline(taskName, dueDateStr);
                     activities.add(deadline);
-                    Storage.saveTasks(activities); // Save after adding
+                    Storage.saveTasks(activities);
 
-                    System.out.println("Got it. I've added this task:\n    [D][ ] " + taskName + " (by: " + dueDate + ")");
+                    System.out.println("Got it. I've added this task:\n    [D][ ] " + taskName + " (by: " + deadline.getDueDate() + ")");
                 } catch (Exception e) {
-                    System.out.println("Invalid day format. Use a valid day like 'Sunday'.");
+                    System.out.println("Invalid date format. Use 'yyyy-MM-dd HHmm' (e.g., 2023-05-01 1800).");
                 }
             }
 
             else if (command.equals("event")) {
                 if (!name.contains("/from") || !name.contains("/to")) {
-                    System.out.println("Invalid format. Use 'event <desc> /from <start> /to <end>'");
+                    System.out.println("Invalid format. Use 'event <desc> /from yyyy-MM-dd HHmm /to yyyy-MM-dd HHmm'.");
                     continue;
                 }
                 try {
                     String[] fromSplit = name.split("/from");
                     String taskName = fromSplit[0].trim();
                     String[] toSplit = fromSplit[1].split("/to");
-                    String startTime = toSplit[0].trim();
-                    String endTime = toSplit[1].trim();
+                    String startTimeStr = toSplit[0].trim();
+                    String endTimeStr = toSplit[1].trim();
 
-                    Event event = new Event(taskName, startTime, endTime);
+                    Event event = new Event(taskName, startTimeStr, endTimeStr);
                     activities.add(event);
-                    Storage.saveTasks(activities); // Save after adding
+                    Storage.saveTasks(activities);
 
                     System.out.println("Got it. I've added this task:\n    [E][ ] " + event.getName()
-                            + " (from: " + startTime + " to: " + endTime + ")");
+                            + " (from: " + event.getStartTime() + " to: " + event.getEndTime() + ")");
                 } catch (Exception e) {
-                    System.out.println("Invalid event format. Use 'event <desc> /from <start> /to <end>'");
+                    System.out.println("Invalid date format. Use 'yyyy-MM-dd HHmm' (e.g., 2023-05-01 1800).");
                 }
             }
 
@@ -116,10 +106,12 @@ public class Phone {
                     int index = Integer.parseInt(name) - 1;
                     Task t = activities.get(index);
                     t.flipDone();
-                    Storage.saveTasks(activities); // Save after marking
+                    Storage.saveTasks(activities);
                     System.out.println("Nice! I've marked this task as done: [X] " + t.getName());
-                } catch (Exception e) {
-                    System.out.println("Invalid task number.");
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid task number. Usage: mark <taskIndex> (e.g., mark 2).");
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("Task index out of range. You have only " + activities.size() + " tasks.");
                 }
             }
 
@@ -128,10 +120,12 @@ public class Phone {
                     int index = Integer.parseInt(name) - 1;
                     Task t = activities.get(index);
                     t.flipDone();
-                    Storage.saveTasks(activities); // Save after unmarking
+                    Storage.saveTasks(activities);
                     System.out.println("OK, I've marked this task as not done yet: [ ] " + t.getName());
-                } catch (Exception e) {
-                    System.out.println("Invalid task number.");
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid task number. Usage: unmark <taskIndex> (e.g., unmark 2).");
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("Task index out of range. You have only " + activities.size() + " tasks.");
                 }
             }
 
@@ -139,11 +133,13 @@ public class Phone {
                 try {
                     int index = Integer.parseInt(name) - 1;
                     Task removedTask = activities.remove(index);
-                    Storage.saveTasks(activities); // Save after deleting
+                    Storage.saveTasks(activities);
                     System.out.println("Noted. I've removed this task:\n[" + removedTask.getType() + "][" +
                             removedTask.getStatus() + "] " + removedTask.getName());
-                } catch (Exception e) {
-                    System.out.println("Invalid task number.");
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid task number. Usage: delete <taskIndex> (e.g., delete 3).");
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("Task index out of range. You have only " + activities.size() + " tasks.");
                 }
             }
 
