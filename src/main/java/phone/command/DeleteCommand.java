@@ -1,3 +1,10 @@
+package phone.command;
+
+import phone.Storage;
+import phone.TaskList;
+import phone.Ui;
+import phone.task.Task;
+
 /**
  * Handles deleting tasks.
  */
@@ -5,7 +12,7 @@ public class DeleteCommand extends Command {
     private String taskIndex;
 
     /**
-     * Constructor for DeleteCommand.
+     * Constructor for phone.command.DeleteCommand.
      *
      * @param taskIndex Index of the task to delete.
      */
@@ -24,7 +31,7 @@ public class DeleteCommand extends Command {
         } catch (NumberFormatException e) {
             ui.showError("Invalid task number. Usage: delete <taskIndex> (e.g., delete 3).");
         } catch (IndexOutOfBoundsException e) {
-            ui.showError("Task index out of range. You have only " + tasks.size() + " tasks.");
+            ui.showError("phone.task.Task index out of range. You have only " + tasks.size() + " tasks.");
         }
     }
 }

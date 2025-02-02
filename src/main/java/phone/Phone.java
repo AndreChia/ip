@@ -1,3 +1,7 @@
+package phone;
+
+import phone.command.Command;
+
 /**
  * The main class that initializes and runs the chatbot.
  */
@@ -7,8 +11,8 @@ public class Phone {
     private Ui ui;
 
     /**
-     * Constructor for Phone.
-     * Initializes Ui, Storage, and TaskList.
+     * Constructor for phone.Phone.
+     * Initializes phone.Ui, phone.Storage, and phone.TaskList.
      *
      * @param filePath Path to the storage file.
      */

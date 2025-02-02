@@ -1,3 +1,10 @@
+package phone;
+
+import phone.task.Deadline;
+import phone.task.Event;
+import phone.task.Task;
+import phone.task.ToDo;
+
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
@@ -10,7 +17,7 @@ public class Storage {
     private final String filePath;
 
     /**
-     * Constructor for Storage.
+     * Constructor for phone.Storage.
      *
      * @param filePath Path to the storage file.
      */

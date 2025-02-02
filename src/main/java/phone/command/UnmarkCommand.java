@@ -1,3 +1,10 @@
+package phone.command;
+
+import phone.Storage;
+import phone.TaskList;
+import phone.Ui;
+import phone.task.Task;
+
 /**
  * Handles unmarking tasks.
  */
@@ -5,7 +12,7 @@ public class UnmarkCommand extends Command {
     private String taskIndex;
 
     /**
-     * Constructor for UnmarkCommand.
+     * Constructor for phone.command.UnmarkCommand.
      *
      * @param taskIndex Index of the task to unmark.
      */
@@ -24,7 +31,7 @@ public class UnmarkCommand extends Command {
         } catch (NumberFormatException e) {
             ui.showError("Invalid task number. Usage: unmark <taskIndex> (e.g., unmark 2).");
         } catch (IndexOutOfBoundsException e) {
-            ui.showError("Task index out of range. You have only " + tasks.size() + " tasks.");
+            ui.showError("phone.task.Task index out of range. You have only " + tasks.size() + " tasks.");
         }
     }
 }

@@ -1,11 +1,15 @@
+package phone.task;
+
+import phone.task.Task;
+
 /**
- * Represents a ToDo task.
+ * Represents a phone.task.ToDo task.
  */
 public class ToDo extends Task {
     /**
-     * Constructor for ToDo.
+     * Constructor for phone.task.ToDo.
      *
-     * @param name Task name.
+     * @param name phone.task.Task name.
      */
     public ToDo(String name) {
         super(name);

@@ -1,3 +1,5 @@
+package phone.task;
+
 /**
  * Represents a general task.
  */
@@ -6,9 +8,9 @@ public abstract class Task {
     private boolean isDone;
 
     /**
-     * Constructor for Task.
+     * Constructor for phone.task.Task.
      *
-     * @param name Task name.
+     * @param name phone.task.Task name.
      */
     public Task(String name) {
         this.name = name;
@@ -27,7 +29,7 @@ public abstract class Task {
     /**
      * Returns the task name.
      *
-     * @return Task name.
+     * @return phone.task.Task name.
      */
     public String getName() {
         return name;
@@ -36,7 +38,7 @@ public abstract class Task {
     /**
      * Returns the task type (T, D, E).
      *
-     * @return Task type.
+     * @return phone.task.Task type.
      */
     public abstract String getType();
 

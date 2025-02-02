@@ -1,15 +1,25 @@
+package phone.command;
+
+import phone.Storage;
+import phone.TaskList;
+import phone.Ui;
+import phone.task.Deadline;
+import phone.task.Event;
+import phone.task.Task;
+import phone.task.ToDo;
+
 /**
- * Handles adding tasks (ToDo, Deadline, Event).
+ * Handles adding tasks (phone.task.ToDo, phone.task.Deadline, phone.task.Event).
  */
 public class AddCommand extends Command {
     private String description;
     private String type;
 
     /**
-     * Constructor for AddCommand.
+     * Constructor for phone.command.AddCommand.
      *
-     * @param description Task description.
-     * @param type        Task type (todo, deadline, event).
+     * @param description phone.task.Task description.
+     * @param type        phone.task.Task type (todo, deadline, event).
      */
     public AddCommand(String description, String type) {
         this.description = description;
