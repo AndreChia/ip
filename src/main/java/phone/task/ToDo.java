@@ -1,7 +1,5 @@
 package phone.task;
 
-import phone.task.Task;
-
 /**
  * Represents a phone.task.ToDo task.
  */

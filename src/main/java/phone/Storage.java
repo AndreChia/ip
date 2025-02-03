@@ -1,14 +1,16 @@
 package phone;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 import phone.task.Deadline;
 import phone.task.Event;
 import phone.task.Task;
 import phone.task.ToDo;
-
-import java.io.*;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * Handles saving and loading of tasks from a file.
@@ -17,7 +19,7 @@ public class Storage {
     private final String filePath;
 
     /**
-     * Constructor for phone.Storage.
+     * Constructor for Storage.
      *
      * @param filePath Path to the storage file.
      */
@@ -44,20 +46,22 @@ public class Storage {
                 String line = scanner.nextLine();
                 String[] parts = line.split(" \\| ");
                 Task task;
+
                 switch (parts[0]) {
-                    case "T":
-                        task = new ToDo(parts[2]);
-                        break;
-                    case "D":
-                        task = new Deadline(parts[2], parts[3]);
-                        break;
-                    case "E":
-                        task = new Event(parts[2], parts[3], parts[4]);
-                        break;
-                    default:
-                        System.out.println("Skipping corrupted entry: " + line);
-                        continue;
+                case "T":
+                    task = new ToDo(parts[2]);
+                    break;
+                case "D":
+                    task = new Deadline(parts[2], parts[3]);
+                    break;
+                case "E":
+                    task = new Event(parts[2], parts[3], parts[4]);
+                    break;
+                default:
+                    System.out.println("Skipping corrupted entry: " + line);
+                    continue;
                 }
+
                 if (parts[1].equals("1")) {
                     task.flipDone();
                 }

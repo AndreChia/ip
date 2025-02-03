@@ -1,11 +1,17 @@
-import phone.TaskList;
-import phone.task.Task;
-import phone.task.ToDo;
-import java.util.List;
-import org.testng.annotations.Test;
+package phone;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
+import phone.task.Task;
+import phone.task.ToDo;
+
+/**
+ * Tests the {@link TaskList} class.
+ */
 class TaskListTest {
     @Test
     void testAddTask() {

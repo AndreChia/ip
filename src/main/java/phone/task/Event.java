@@ -4,18 +4,21 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Represents an phone.task.Event task with a start and end time.
+ * Represents an Event task with a start and end time.
  */
 public class Event extends Task {
+    private static final DateTimeFormatter INPUT_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+    private static final DateTimeFormatter OUTPUT_FORMAT =
+            DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
+
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-    private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
 
     /**
-     * Constructor for phone.task.Event.
+     * Constructor for Event.
      *
-     * @param name      phone.task.Task name.
+     * @param name      Task name.
      * @param startTime Start time in "yyyy-MM-dd HHmm" format.
      * @param endTime   End time in "yyyy-MM-dd HHmm" format.
      */
@@ -55,7 +58,7 @@ public class Event extends Task {
 
     @Override
     public String toFileFormat() {
-        return "E | " + (getStatus().equals("X") ? "1" : "0") + " | " + getName() + " | " +
-                startTime.format(INPUT_FORMAT) + " | " + endTime.format(INPUT_FORMAT);
+        return "E | " + (getStatus().equals("X") ? "1" : "0") + " | " + getName() + " | "
+                + startTime.format(INPUT_FORMAT) + " | " + endTime.format(INPUT_FORMAT);
     }
 }
