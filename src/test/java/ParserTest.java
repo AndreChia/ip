@@ -1,10 +1,20 @@
+package phone;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
-import phone.Parser;
-import phone.command.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.testng.AssertJUnit.assertEquals;
+import phone.command.AddCommand;
+import phone.command.DeleteCommand;
+import phone.command.ExitCommand;
+import phone.command.InvalidCommand;
+import phone.command.ListCommand;
+import phone.command.MarkCommand;
+import phone.command.UnmarkCommand;
 
+/**
+ * Tests the {@link Parser} class.
+ */
 class ParserTest {
     @Test
     void testParseValidCommand() {
