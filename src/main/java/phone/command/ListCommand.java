@@ -9,7 +9,7 @@ import phone.Ui;
  */
 public class ListCommand extends Command {
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
+    public String execute(TaskList tasks, Ui ui, Storage storage) {
         if (tasks.size() == 0) {
             ui.showMessage("Your task list is empty.");
         } else {
@@ -17,5 +17,6 @@ public class ListCommand extends Command {
                 ui.showMessage((i + 1) + ". " + tasks.getTask(i).toString()); // No extra formatting
             }
         }
+        return null;
     }
 }

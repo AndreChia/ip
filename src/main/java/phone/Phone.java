@@ -3,9 +3,11 @@ package phone;
 import phone.command.Command;
 
 /**
- * The main class that initializes and runs the chatbot.
+ * The main class that initializes and runs the chatbot logic.
  */
 public class Phone {
+
+    private static final String DEFAULT_FILE_PATH = "data/duke.txt";
     private Storage storage;
     private TaskList tasks;
     private Ui ui;
@@ -17,32 +19,27 @@ public class Phone {
      * @param filePath Path to the storage file.
      */
     public Phone(String filePath) {
-        ui = new Ui();
-        storage = new Storage(filePath);
-        tasks = new TaskList(storage.loadTasks());
+        this.ui = new Ui();
+        this.storage = new Storage(filePath);
+        this.tasks = new TaskList(storage.loadTasks());
     }
 
     /**
-     * Runs the chatbot until user exits.
+     * Default constructor for phone.Phone.
+     * Uses the default file path.
      */
-    public void run() {
-        ui.showWelcome();
-        boolean isExit = false;
-
-        while (!isExit) {
-            String fullCommand = ui.readCommand();
-            ui.showLine();
-            Command command = Parser.parse(fullCommand);
-            command.execute(tasks, ui, storage);
-            isExit = command.isExit();
-            ui.showLine();
-        }
+    public Phone() {
+        this(DEFAULT_FILE_PATH);
     }
 
     /**
-     * Main entry point.
+     * Processes user input and returns a response.
+     *
+     * @param input The user's input.
+     * @return The chatbot's response (for now, it just echoes the input).
      */
-    public static void main(String[] args) {
-        new Phone("data/duke.txt").run();
+    public String getResponse(String input) {
+        return input; // Echo the input back
     }
+
 }
