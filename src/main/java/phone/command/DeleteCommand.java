@@ -21,7 +21,7 @@ public class DeleteCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
+    public String execute(TaskList tasks, Ui ui, Storage storage) {
         try {
             int index = Integer.parseInt(taskIndex) - 1;
             Task removedTask = tasks.getTask(index);
@@ -33,5 +33,6 @@ public class DeleteCommand extends Command {
         } catch (IndexOutOfBoundsException e) {
             ui.showError("phone.task.Task index out of range. You have only " + tasks.size() + " tasks.");
         }
+        return null;
     }
 }

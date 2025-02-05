@@ -27,7 +27,7 @@ public class AddCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
+    public String execute(TaskList tasks, Ui ui, Storage storage) {
         Task task;
         try {
             switch (type) {
@@ -44,7 +44,7 @@ public class AddCommand extends Command {
                 break;
             default:
                 ui.showError("Invalid task type.");
-                return;
+                return null;
             }
             tasks.addTask(task);
             storage.saveTasks(tasks.getTasks());
@@ -53,5 +53,6 @@ public class AddCommand extends Command {
             ui.showError("Invalid format. Use 'todo <desc>', 'deadline <desc> /by yyyy-MM-dd HHmm',"
                     + " or 'event <desc> /from yyyy-MM-dd HHmm /to yyyy-MM-dd HHmm'.");
         }
+        return null;
     }
 }
