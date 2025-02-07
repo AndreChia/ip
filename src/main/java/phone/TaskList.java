@@ -93,4 +93,19 @@ public class TaskList {
     public List<Task> getTasks() {
         return tasks;
     }
+
+    /**
+     * Returns the formatted task list as a string for display in the GUI.
+     */
+    public String getFormattedTaskList() {
+        if (tasks.isEmpty()) {
+            return "Bro, you got no tasks yet!";
+        }
+        StringBuilder sb = new StringBuilder("Here's your task list:\n");
+        for (int i = 0; i < tasks.size(); i++) {
+            sb.append(i + 1).append(". ").append(tasks.get(i)).append("\n");
+        }
+        return sb.toString();
+    }
+
 }

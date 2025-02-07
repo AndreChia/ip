@@ -25,24 +25,31 @@ public class Phone {
     /**
      * Runs the chatbot until user exits.
      */
-    public void run() {
-        ui.showWelcome();
-        boolean isExit = false;
-
-        while (!isExit) {
-            String fullCommand = ui.readCommand();
-            ui.showLine();
-            Command command = Parser.parse(fullCommand);
-            command.execute(tasks, ui, storage);
-            isExit = command.isExit();
-            ui.showLine();
-        }
+    public Phone() {
+        this(DEFAULT_FILE_PATH);
     }
 
     /**
-     * Main entry point.
+     * Processes user input and returns a response.
+     *
+     * @param input The user's input.
+     * @return The task executed
      */
-    public static void main(String[] args) {
-        new Phone("data/duke.txt").run();
+    public String getResponse(String input) {
+        Command command = Parser.parse(input);
+        return command.execute(tasks, ui, storage); // Returns response from the command
     }
+
+    public TaskList getTaskList() {
+        return tasks;
+    }
+
+    public Ui getUi() {
+        return ui;
+    }
+
+    public Storage getStorage() {
+        return storage;
+    }
+
 }

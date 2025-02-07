@@ -4,7 +4,7 @@ package phone.task;
  * Represents a general task.
  */
 public abstract class Task {
-    private String name;
+    private final String name;
     private boolean isDone;
 
     /**
@@ -41,6 +41,20 @@ public abstract class Task {
      * @return phone.task.Task type.
      */
     public abstract String getType();
+
+    /**
+     * Marks task as done.
+     */
+    public void markDone() {
+        this.isDone = true;
+    }
+
+    /**
+     * Marks task as not done.
+     */
+    public void markUndone() {
+        this.isDone = false;
+    }
 
     /**
      * Toggles the completion status of the task.

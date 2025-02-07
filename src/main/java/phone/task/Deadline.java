@@ -2,34 +2,38 @@ package phone.task;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
- * Represents a phone.task.Deadline task with a due date.
+ * Represents a Deadline task with a due date.
  */
 public class Deadline extends Task {
+    private static final DateTimeFormatter OUTPUT_FORMAT =
+            DateTimeFormatter.ofPattern("d MMM yyyy, h:mm a");
 
-    private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-    private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
-    private LocalDateTime dueDate;
+    private static final DateTimeFormatter FILE_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+
+    private String dueDate;
 
     /**
-     * Constructor for phone.task.Deadline.
+     * Constructor for Deadline.
      *
-     * @param name    phone.task.Task name.
-     * @param dueDate Due date in "yyyy-MM-dd HHmm" format.
+     * @param name    Task name.
+     * @param dueDate Due date as a String.
      */
     public Deadline(String name, String dueDate) {
         super(name);
-        this.dueDate = LocalDateTime.parse(dueDate, INPUT_FORMAT);
+        this.dueDate = dueDate;
     }
 
     /**
-     * Returns the formatted due date.
+     * Retrieves the due date formatted for display.
      *
      * @return Formatted due date string.
      */
-    public String getDueDate() {
-        return this.dueDate.format(OUTPUT_FORMAT);
+    public String getFormattedDueDate() {
+        return dueDate;
     }
 
     @Override
@@ -39,12 +43,11 @@ public class Deadline extends Task {
 
     @Override
     public String toString() {
-        return super.toString() + " (by: " + getDueDate() + ")";
+        return super.toString() + " (by: " + getFormattedDueDate() + ")";
     }
 
     @Override
     public String toFileFormat() {
-        return "D | " + (getStatus().equals("X") ? "1" : "0") + " | "
-                + getName() + " | " + dueDate.format(INPUT_FORMAT);
+        return "D | " + (getStatus().equals("X") ? "1" : "0") + " | " + getName() + " | " + dueDate;
     }
 }

@@ -27,11 +27,11 @@ public class UnmarkCommand extends Command {
             Task task = tasks.getTask(index);
             task.flipDone();
             storage.saveTasks(tasks.getTasks());
-            ui.showMessage("OK, I've marked this task as not done yet:\n    " + task.toString());
+            return "OK, I've marked this task as not done yet:\n  " + task.toString();
         } catch (NumberFormatException e) {
-            ui.showError("Invalid task number. Usage: unmark <taskIndex> (e.g., unmark 2).");
+            return "Invalid task number. Usage: unmark <taskIndex> (e.g., unmark 2).";
         } catch (IndexOutOfBoundsException e) {
-            ui.showError("phone.task.Task index out of range. You have only " + tasks.size() + " tasks.");
+            return "phone.task.Task index out of range. You have only " + tasks.size() + " tasks.";
         }
     }
 }
