@@ -241,6 +241,5 @@ public class AddCommand extends Command {
             default:
                 return null;
         }
-        return null;
     }
 }

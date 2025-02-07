@@ -33,6 +33,5 @@ public class UnmarkCommand extends Command {
         } catch (IndexOutOfBoundsException e) {
             return "phone.task.Task index out of range. You have only " + tasks.size() + " tasks.";
         }
-        return null;
     }
 }
