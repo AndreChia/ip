@@ -36,10 +36,23 @@ public class Phone {
      * Processes user input and returns a response.
      *
      * @param input The user's input.
-     * @return The chatbot's response (for now, it just echoes the input).
+     * @return The task executed
      */
     public String getResponse(String input) {
-        return input; // Echo the input back
+        Command command = Parser.parse(input);
+        return command.execute(tasks, ui, storage); // Returns response from the command
+    }
+
+    public TaskList getTaskList() {
+        return tasks;
+    }
+
+    public Ui getUi() {
+        return ui;
+    }
+
+    public Storage getStorage() {
+        return storage;
     }
 
 }

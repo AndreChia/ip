@@ -13,7 +13,16 @@ import javafx.fxml.FXMLLoader;
 import java.io.IOException;
 
 import phone.DialogBox;
+import phone.Parser;
 import phone.Phone;
+import phone.command.Command;
+import phone.command.AddCommand;
+import phone.command.DeleteCommand;
+import phone.command.MarkCommand;
+import phone.command.UnmarkCommand;
+import phone.task.Deadline;
+import phone.task.Event;
+import phone.task.ToDo;
 
 /**
  * Controller for the main GUI.
@@ -57,17 +66,22 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     private void handleUserInput() {
-        String input = userInput.getText();
-        String response = phone.getResponse(input); // Get chatbot's response
+        String input = userInput.getText().trim();
+        String response = phone.getResponse(input); // Directly get response from Phone
 
-        // Add both user input and chatbot response to the VBox
         dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),   // User's message with user image
-                DialogBox.getDukeDialog(response, phoneImage) // Chatbot's response with chatbot image
-        );
+                DialogBox.getUserDialog(input, userImage),
+                DialogBox.getDukeDialog(response, phoneImage));
 
-        userInput.clear(); // Clear the input field after processing
+        userInput.clear();
     }
 
+    @FXML
+    private void displayTaskList() {
+        // Only refresh task list if it was modified
+        String taskListString = phone.getTaskList().getFormattedTaskList();
+        dialogContainer.getChildren().add(
+                DialogBox.getDukeDialog(taskListString, phoneImage));
+    }
 
 }

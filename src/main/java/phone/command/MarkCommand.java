@@ -27,11 +27,11 @@ public class MarkCommand extends Command {
             Task task = tasks.getTask(index);
             task.flipDone();
             storage.saveTasks(tasks.getTasks());
-            ui.showMessage("Nice! I've marked this task as done:\n    " + task.toString());
+            return "Nice! I've marked this task as done:\n  " + task.toString();
         } catch (NumberFormatException e) {
-            ui.showError("Invalid task number. Usage: mark <taskIndex> (e.g., mark 2).");
+            return "Invalid task number. Usage: mark <taskIndex> (e.g., mark 2).";
         } catch (IndexOutOfBoundsException e) {
-            ui.showError("phone.task.Task index out of range. You have only " + tasks.size() + " tasks.");
+            return "phone.task.Task index out of range. You have only " + tasks.size() + " tasks.";
         }
         return null;
     }

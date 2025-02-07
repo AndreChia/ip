@@ -27,11 +27,11 @@ public class DeleteCommand extends Command {
             Task removedTask = tasks.getTask(index);
             tasks.deleteTask(index);
             storage.saveTasks(tasks.getTasks());
-            ui.showMessage("Noted. I've removed this task:\n    " + removedTask.toString());
+            return "Noted. I've removed this task:\n    " + removedTask.toString();
         } catch (NumberFormatException e) {
-            ui.showError("Invalid task number. Usage: delete <taskIndex> (e.g., delete 3).");
+            return "Invalid task number. Usage: delete <taskIndex> (e.g., delete 3).";
         } catch (IndexOutOfBoundsException e) {
-            ui.showError("phone.task.Task index out of range. You have only " + tasks.size() + " tasks.");
+            return "phone.task.Task index out of range. You have only " + tasks.size() + " tasks.";
         }
         return null;
     }
