@@ -56,13 +56,10 @@ public class AddCommand extends Command {
             switch (type) {
                 case "todo":
                     return handleTodo(tasks, storage);
-
                 case "deadline":
                     return handleDeadline(tasks, storage);
-
                 case "event":
                     return handleEvent(tasks, storage);
-
                 default:
                     return "Invalid task type. Use: todo, deadline, or event.";
             }
@@ -96,6 +93,7 @@ public class AddCommand extends Command {
      */
     private String handleDeadline(TaskList tasks, Storage storage) {
         String[] deadlineParts = description.split("/by", 2);
+        assert deadlineParts.length == 2 : "Deadline input should contain '/by' segment";
         if (deadlineParts.length < 2) {
             return "Invalid deadline format! "
                     + "Use: 'deadline <desc> /by yyyy-MM-dd HHmm' or similar.";
@@ -124,6 +122,7 @@ public class AddCommand extends Command {
      */
     private String handleEvent(TaskList tasks, Storage storage) {
         String[] eventParts = description.split("/from|/to", 3);
+        assert eventParts.length == 3 : "Event input should contain '/from' and '/to' segments";
         if (eventParts.length < 3) {
             return "Invalid event format! "
                     + "Use: 'event <desc> /from <date/time> /to <date/time>'.";
