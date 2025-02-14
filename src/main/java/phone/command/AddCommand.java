@@ -73,6 +73,7 @@ public class AddCommand extends Command {
                 case "deadline":
                     // Expected format: deadline <desc> /by <date/time string>
                     String[] deadlineParts = description.split("/by", 2);
+                    assert deadlineParts.length == 2 : "Deadline input should contain '/by' segment";
                     if (deadlineParts.length < 2) {
                         return "Invalid deadline format! Use: 'deadline <desc> /by yyyy-MM-dd HHmm' or similar.";
                     }
@@ -91,6 +92,7 @@ public class AddCommand extends Command {
                 case "event":
                     // Expected format: event <desc> /from <date/time> /to <date/time>
                     String[] eventParts = description.split("/from|/to", 3);
+                    assert eventParts.length == 3 : "Event input should contain '/from' and '/to' segments";
                     if (eventParts.length < 3) {
                         return "Invalid event format! Use: 'event <desc> /from <date/time> /to <date/time>'.";
                     }
