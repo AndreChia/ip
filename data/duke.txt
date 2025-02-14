@@ -9,5 +9,4 @@ D | 0 | return book | 2025-02-09 1800
 D | 0 | return book | 2025-02-09 1800
 E | 0 | meeting | 2024-10-10 1200 | 2024-10-10 1400
 D | 0 | return book | 2025-02-09 1800
-D | 0 | return book | 9 Feb 2025, 6:00 pm
-E | 0 | project meeting | 10 Feb 2025, 2:00 pm | 10 Feb 2025, 4:00 pm
+D | 0 | return book | 2025-02-09 1800

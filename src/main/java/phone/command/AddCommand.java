@@ -21,29 +21,18 @@ import phone.task.ToDo;
  * Handles adding tasks (ToDo, Deadline, Event).
  */
 public class AddCommand extends Command {
+
     private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("d MMM yyyy, h:mm a");
 
-    /**
-     * A list of common datetime formats for parsing full date+time.
-     */
     private static final DateTimeFormatter[] DATE_FORMATS = {
             DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"),
             DateTimeFormatter.ofPattern("d/M/yyyy HHmm"),
             DateTimeFormatter.ofPattern("d MMM yyyy, h:mm a")
     };
 
-    /**
-     * A list of time-only formats to be used if no full date parse is successful
-     * but we do have a known reference date.
-     *
-     * Example: "1400", "4:00 PM", "4pm", etc.
-     */
     private static final DateTimeFormatter[] TIME_FORMATS = {
-            // 24-hour with no separator, e.g. "1400"
             DateTimeFormatter.ofPattern("HHmm"),
-            // 24-hour with separator, e.g. "14:00"
             DateTimeFormatter.ofPattern("H:mm"),
-            // 12-hour, e.g. "4 PM"
             DateTimeFormatter.ofPattern("h a", Locale.ENGLISH)
     };
 
@@ -63,84 +52,124 @@ public class AddCommand extends Command {
 
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) {
-        Task task;
         try {
             switch (type) {
                 case "todo":
-                    task = new ToDo(description);
-                    break;
+                    return handleTodo(tasks, storage);
 
                 case "deadline":
-                    // Expected format: deadline <desc> /by <date/time string>
-                    String[] deadlineParts = description.split("/by", 2);
-                    if (deadlineParts.length < 2) {
-                        return "Invalid deadline format! Use: 'deadline <desc> /by yyyy-MM-dd HHmm' or similar.";
-                    }
-
-                    LocalDateTime deadlineDateTime = parseDateTime(deadlineParts[1].trim(), null);
-                    if (deadlineDateTime == null) {
-                        return "Invalid deadline date format! "
-                                + "Try something like 'yyyy-MM-dd HHmm' or 'Sunday' or 'Mon 2pm'.";
-                    }
-
-                    // Format for display/storage
-                    String deadlineFormatted = deadlineDateTime.format(OUTPUT_FORMAT);
-                    task = new Deadline(deadlineParts[0].trim(), deadlineFormatted);
-                    break;
+                    return handleDeadline(tasks, storage);
 
                 case "event":
-                    // Expected format: event <desc> /from <date/time> /to <date/time>
-                    String[] eventParts = description.split("/from|/to", 3);
-                    if (eventParts.length < 3) {
-                        return "Invalid event format! Use: 'event <desc> /from <date/time> /to <date/time>'.";
-                    }
-
-                    // Parse start
-                    LocalDateTime startDateTime = parseDateTime(eventParts[1].trim(), null);
-                    if (startDateTime == null) {
-                        return "Could not parse the event start time! Use valid formats (e.g. 'Mon 2pm').";
-                    }
-
-                    // Parse end, giving 'startDateTime' as a reference for time-only inputs
-                    LocalDateTime endDateTime = parseDateTime(eventParts[2].trim(), startDateTime);
-                    if (endDateTime == null) {
-                        return "Could not parse the event end time! Use valid formats or time-only (e.g. '4pm').";
-                    }
-
-                    // Format for display/storage
-                    String startFormatted = startDateTime.format(OUTPUT_FORMAT);
-                    String endFormatted = endDateTime.format(OUTPUT_FORMAT);
-                    task = new Event(eventParts[0].trim(), startFormatted, endFormatted);
-                    break;
+                    return handleEvent(tasks, storage);
 
                 default:
                     return "Invalid task type. Use: todo, deadline, or event.";
             }
-
-            tasks.addTask(task);
-            storage.saveTasks(tasks.getTasks());
-
-            return "Got it. I've added this task:\n    "
-                    + task.toString()
-                    + "\nNow you have " + tasks.size() + " tasks in the list.";
-
         } catch (ArrayIndexOutOfBoundsException e) {
             return "Invalid format! Please follow the correct format for " + type + ".";
         }
     }
 
     /**
-     * Parses a date/time string into a LocalDateTime using multiple strategies:
-     * <ul>
-     * <li>Common date+time patterns (e.g. "yyyy-MM-dd HHmm").</li>
-     * <li>Full day-of-week only (e.g. "Sunday"), defaulting time to 6 PM.</li>
-     * <li>Short or long day-of-week + time (e.g. "Mon 2pm", "Monday 2pm").</li>
-     * <li>If {@code referenceDateTime} is not null, time-only patterns ("4pm")
-     * applied to that date.</li>
-     * </ul>
+     * Handles adding a ToDo task.
+     *
+     * @param tasks   TaskList to which the new Task is added.
+     * @param storage Storage used to persist tasks.
+     * @return Result message to display to the user.
      */
+    private String handleTodo(TaskList tasks, Storage storage) {
+        // Create a ToDo with the entire 'description' as the content
+        Task task = new ToDo(description);
+        tasks.addTask(task);
+        storage.saveTasks(tasks.getTasks());
+
+        return buildAddMessage(task, tasks.size());
+    }
+
+    /**
+     * Handles adding a Deadline task.
+     *
+     * @param tasks   TaskList to which the new Task is added.
+     * @param storage Storage used to persist tasks.
+     * @return Result message to display to the user.
+     */
+    private String handleDeadline(TaskList tasks, Storage storage) {
+        String[] deadlineParts = description.split("/by", 2);
+        if (deadlineParts.length < 2) {
+            return "Invalid deadline format! "
+                    + "Use: 'deadline <desc> /by yyyy-MM-dd HHmm' or similar.";
+        }
+
+        LocalDateTime deadlineDateTime = parseDateTime(deadlineParts[1].trim(), null);
+        if (deadlineDateTime == null) {
+            return "Invalid deadline date format! "
+                    + "Try 'yyyy-MM-dd HHmm', 'Sunday', or 'Mon 2pm'.";
+        }
+
+        String deadlineFormatted = deadlineDateTime.format(OUTPUT_FORMAT);
+        Task task = new Deadline(deadlineParts[0].trim(), deadlineFormatted);
+
+        tasks.addTask(task);
+        storage.saveTasks(tasks.getTasks());
+        return buildAddMessage(task, tasks.size());
+    }
+
+    /**
+     * Handles adding an Event task.
+     *
+     * @param tasks   TaskList to which the new Task is added.
+     * @param storage Storage used to persist tasks.
+     * @return Result message to display to the user.
+     */
+    private String handleEvent(TaskList tasks, Storage storage) {
+        String[] eventParts = description.split("/from|/to", 3);
+        if (eventParts.length < 3) {
+            return "Invalid event format! "
+                    + "Use: 'event <desc> /from <date/time> /to <date/time>'.";
+        }
+
+        LocalDateTime startDateTime = parseDateTime(eventParts[1].trim(), null);
+        if (startDateTime == null) {
+            return "Could not parse the event start time! "
+                    + "Use valid formats (e.g. 'Mon 2pm').";
+        }
+
+        // Parse end, referencing the start for possible time-only inputs
+        LocalDateTime endDateTime = parseDateTime(eventParts[2].trim(), startDateTime);
+        if (endDateTime == null) {
+            return "Could not parse the event end time! "
+                    + "Use valid formats or time-only (e.g. '4pm').";
+        }
+
+        String startFormatted = startDateTime.format(OUTPUT_FORMAT);
+        String endFormatted = endDateTime.format(OUTPUT_FORMAT);
+        Task task = new Event(eventParts[0].trim(), startFormatted, endFormatted);
+
+        tasks.addTask(task);
+        storage.saveTasks(tasks.getTasks());
+        return buildAddMessage(task, tasks.size());
+    }
+
+    /**
+     * Builds the success message after adding a task.
+     *
+     * @param task Newly added task.
+     * @param totalTasks Current total number of tasks in the list.
+     * @return The formatted success message.
+     */
+    private String buildAddMessage(Task task, int totalTasks) {
+        return "Got it. I've added this task:\n    "
+                + task.toString()
+                + "\nNow you have " + totalTasks + " tasks in the list.";
+    }
+
+    // -------------------------------------------------------
+    // Existing parseDateTime(...) and parseDayOfWeek(...) below
+    // -------------------------------------------------------
+
     private LocalDateTime parseDateTime(String inputDateTime, LocalDateTime referenceDateTime) {
-        // 1) Try the known full date+time formats
+        // (unchanged from your code)
         for (DateTimeFormatter format : DATE_FORMATS) {
             try {
                 return LocalDateTime.parse(inputDateTime, format);
@@ -149,24 +178,17 @@ public class AddCommand extends Command {
             }
         }
 
-        // 2) Check if this is a day-of-week only. (e.g. "Sunday" or "Mon")
-        // We'll try to parse even short forms ("Mon") or full ("Monday").
         DayOfWeek possibleDay = parseDayOfWeek(inputDateTime);
         if (possibleDay != null) {
-            // If we recognized "Mon" or "Monday", then default to next <that day> at 6 PM
             return LocalDate.now()
                     .with(TemporalAdjusters.next(possibleDay))
                     .atTime(18, 0);
         }
 
-        // 3) Check day-of-week + time (e.g. "Mon 2pm")
         String[] parts = inputDateTime.split(" ");
         if (parts.length == 2) {
-            // Try parseDayOfWeek on the first part
             DayOfWeek day = parseDayOfWeek(parts[0]);
             if (day != null) {
-                // Attempt to parse time from the second part
-                // e.g. "2pm" -> "2 PM"
                 String cleanedTime = parts[1].replace("am", " AM").replace("pm", " PM");
                 try {
                     LocalTime time = LocalTime.parse(cleanedTime,
@@ -180,13 +202,11 @@ public class AddCommand extends Command {
             }
         }
 
-        // 4) If we have a reference date/time, try time-only parsing
         if (referenceDateTime != null) {
             for (DateTimeFormatter timeFormat : TIME_FORMATS) {
                 try {
                     String cleaned = inputDateTime.replace("am", " AM").replace("pm", " PM");
                     LocalTime time = LocalTime.parse(cleaned, timeFormat);
-                    // Combine with reference date's date part
                     return referenceDateTime.toLocalDate().atTime(time);
                 } catch (DateTimeParseException ignored) {
                     // Try next time format
@@ -194,24 +214,12 @@ public class AddCommand extends Command {
             }
         }
 
-        // If all else fails, return null
         return null;
     }
 
-    /**
-     * Tries to parse both short and full forms of day-of-week.
-     * e.g. "Mon" -> MONDAY, "Tues" -> TUESDAY, "Sunday" -> SUNDAY, etc.
-     *
-     * @param input The day-of-week string from user input.
-     * @return A DayOfWeek if recognized, or null if not recognized.
-     */
     private DayOfWeek parseDayOfWeek(String input) {
-        // Normalize to uppercase
+        // (unchanged from your code)
         String upper = input.toUpperCase(Locale.ENGLISH);
-
-        // Check if the user typed "MON", "Monday", etc.
-        // The built-in DayOfWeek.valueOf expects EXACT name: "MONDAY", "TUESDAY", ...
-        // So let's do a quick map of possible short forms to the full name.
         switch (upper) {
             case "SUN":
             case "SUNDAY":
