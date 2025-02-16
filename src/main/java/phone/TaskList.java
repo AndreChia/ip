@@ -2,6 +2,8 @@ package phone;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import phone.task.Task;
 
@@ -101,11 +103,12 @@ public class TaskList {
         if (tasks.isEmpty()) {
             return "Bro, you got no tasks yet!";
         }
-        StringBuilder sb = new StringBuilder("Here's your task list:\n");
-        for (int i = 0; i < tasks.size(); i++) {
-            sb.append(i + 1).append(". ").append(tasks.get(i)).append("\n");
-        }
-        return sb.toString();
+
+        return "Here's your task list:\n" +
+                IntStream.range(0, tasks.size())
+                        .mapToObj(i -> (i + 1) + ". " + tasks.get(i))
+                        .collect(Collectors.joining("\n"));
     }
+
 
 }
