@@ -28,3 +28,4 @@ Welcome to **PhoneGPT** – your friendly chatbot for managing tasks and client 
 1. Clone the repository:
    ```bash
    git clone https://github.com/AndreChia/ip.git
+   ```
