@@ -45,11 +45,20 @@ public class MainWindow extends AnchorPane {
 
     @FXML
     public void initialize() {
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
-
-        // Load images correctly
         userImage = new Image(this.getClass().getResourceAsStream("/images/sora1.jpg"));
-        phoneImage = new Image(this.getClass().getResourceAsStream("/images/sora2.jpg"));
+        phoneImage = new Image(this.getClass().getResourceAsStream("/images/phoneBot.jpg"));
+        String asciiArt = "\u2588\u2588\u2588\u2588\u2588\u2588\u2502 \u2588\u2588\u2502  \u2588\u2588\u2502 \u2588\u2588\u2588\u2588\u2588\u2588\u2502 \u2588\u2588\u2588\u2502   \u2588\u2588\u2502\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2502\n"
+                + "\u2588\u2588\u2550\u2550\u2588\u2588\u2502\u2588\u2588\u2502  \u2588\u2588\u2502\u2588\u2588\u2550\u2550\u2550\u2588\u2588\u2502\u2588\u2588\u2588\u2588\u2502  \u2588\u2588\u2502\u2588\u2588\u2550\u2550\u2550\u2550\u2550\u2502\n"
+                + "\u2588\u2588\u2588\u2588\u2588\u2588\u2550\u2502\u2588\u2588\u2588\u2588\u2588\u2502\u2588\u2588\u2502   \u2588\u2588\u2502\u2588\u2588\u2550\u2588\u2588\u2502 \u2588\u2588\u2502\u2588\u2588\u2588\u2588\u2502  \n"
+                + "\u2588\u2588\u2550\u2550\u2550\u2550\u2550\u2502\u2588\u2588\u2550\u2550\u2588\u2588\u2502\u2588\u2588\u2502   \u2588\u2588\u2502\u2588\u2588\u2502\u255A\u2588\u2588\u2502\u2588\u2588\u2550\u2550\u2502  \n"
+                + "\u2588\u2588\u2502     \u2588\u2588\u2502  \u2588\u2588\u2502\u255A\u2588\u2588\u2588\u2588\u2588\u2502\u2588\u2588\u2502 \u255A\u2588\u2588\u2588\u2502\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2502\n"
+                + "\u255A\u255D     \u255A\u255D  \u255A\u255D \u255A\u255D\u255A\u255D  \u255A\u255D\u255A\u255D  \u255A\u255D\u255A\u255D\u255A\u255D\u255A\u255D\u255A\u255D\u255A\u255D";
+
+        dialogContainer.getChildren().add(
+                DialogBox.getPhoneDialog(asciiArt + "\nWelcome to PhoneGPT! I'll try to help you as much as I can but I miss my ex-girlfriend Jady Myint.", phoneImage)
+        );
+
+        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
 
     /**

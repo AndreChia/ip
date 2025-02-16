@@ -73,4 +73,12 @@ public class DialogBox extends HBox {
         db.flip(); // Ensure chatbot messages appear on the left
         return db;
     }
+
+    public static DialogBox getPhoneDialog(String text, Image img) {
+        DialogBox db = new DialogBox(text, img);
+        db.flip(); // Display the dialog on the left with Phone image
+        return db;
+    }
+
+
 }
