@@ -3,25 +3,27 @@ package phone;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 
+import phone.clientmanagement.Client;
+import phone.clientmanagement.ClientList;
 import phone.task.Deadline;
 import phone.task.Event;
 import phone.task.Task;
 import phone.task.ToDo;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Locale;
 
 /**
- * Handles saving and loading of tasks from a file.
+ * Handles saving and loading of tasks and clients from files.
  */
 public class Storage {
     private static final DateTimeFormatter INPUT_FORMAT =
@@ -37,21 +39,14 @@ public class Storage {
     };
 
     private final String filePath;
+    private final String clientFilePath = "data/clients.txt"; // Separate file for clients
 
-    /**
-     * Constructor for Storage.
-     *
-     * @param filePath Path to the storage file.
-     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
-    /**
-     * Loads tasks from the file.
-     *
-     * @return List of tasks.
-     */
+    // Existing task-related methods remain unchanged
+
     public List<Task> loadTasks() {
         List<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
@@ -107,11 +102,6 @@ public class Storage {
         return tasks;
     }
 
-    /**
-     * Saves tasks to the file.
-     *
-     * @param tasks List of tasks to save.
-     */
     public void saveTasks(List<Task> tasks) {
         File file = new File(filePath);
         file.getParentFile().mkdirs();
@@ -125,13 +115,6 @@ public class Storage {
         }
     }
 
-    /**
-     * Parses a date string into LocalDateTime using multiple possible formats,
-     * including "Sunday", "Mon 2pm".
-     *
-     * @param inputDateTime The string to parse.
-     * @return LocalDateTime if successful, otherwise null.
-     */
     private LocalDateTime parseDate(String inputDateTime) {
         for (DateTimeFormatter format : INPUT_FORMATS) {
             try {
@@ -140,14 +123,12 @@ public class Storage {
             }
         }
 
-        // Try parsing a day name like "Sunday" and set to the next occurrence at 6 PM
         try {
             DayOfWeek day = DayOfWeek.valueOf(inputDateTime.toUpperCase(Locale.ENGLISH));
             return LocalDate.now().with(TemporalAdjusters.next(day)).atTime(18, 0);
         } catch (Exception ignored) {
         }
 
-        // Try parsing "Mon 2pm"
         String[] parts = inputDateTime.split(" ");
         if (parts.length == 2) {
             try {
@@ -159,7 +140,57 @@ public class Storage {
             } catch (Exception ignored) {
             }
         }
+        return null;
+    }
 
-        return null; // Parsing failed
+    // New methods for client data
+
+    /**
+     * Loads clients from the client file.
+     *
+     * @return A list of clients.
+     */
+    public List<Client> loadClients() {
+        List<Client> clients = new ArrayList<>();
+        File file = new File(clientFilePath);
+
+        if (!file.exists()) {
+            System.out.println("No previous clients found. Creating new client list.");
+            return clients;
+        }
+
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(" \\| ");
+                if (parts.length == 3) {
+                    clients.add(new Client(parts[0], parts[1], parts[2]));
+                } else {
+                    System.out.println("Skipping corrupted client entry: " + line);
+                }
+            }
+            System.out.println("Loaded " + clients.size() + " clients from file.");
+        } catch (Exception e) {
+            System.out.println("Error reading client file. It might be corrupted.");
+        }
+        return clients;
+    }
+
+    /**
+     * Saves clients to the client file.
+     *
+     * @param clients List of clients to save.
+     */
+    public void saveClients(List<Client> clients) {
+        File file = new File(clientFilePath);
+        file.getParentFile().mkdirs();
+
+        try (FileWriter writer = new FileWriter(file)) {
+            for (Client client : clients) {
+                writer.write(client.toString() + "\n");
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving clients: " + e.getMessage());
+        }
     }
 }

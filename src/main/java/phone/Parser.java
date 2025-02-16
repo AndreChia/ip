@@ -1,13 +1,6 @@
 package phone;
 
-import phone.command.AddCommand;
-import phone.command.Command;
-import phone.command.DeleteCommand;
-import phone.command.ExitCommand;
-import phone.command.InvalidCommand;
-import phone.command.ListCommand;
-import phone.command.MarkCommand;
-import phone.command.UnmarkCommand;
+import phone.command.*;
 
 /**
  * Parses user input and returns corresponding command.
@@ -41,9 +34,22 @@ public class Parser {
                 return new UnmarkCommand(arguments);
             case "delete":
                 return new DeleteCommand(arguments);
+            case "client":
+                String[] clientArgs = arguments.split(" ", 2);
+                if (clientArgs[0].equals("add")) {
+                    String[] details = clientArgs[1].split(" ", 3);
+                    if (details.length < 3) {
+                        return new InvalidCommand(); // Handle invalid client add command
+                    }
+                    return new AddClientCommand(details[0], details[1], details[2]);
+                } else if (clientArgs[0].equals("list")) {
+                    return new ListClientCommand();
+                } else {
+                    return new InvalidCommand();
+                }
+
             default:
                 return new InvalidCommand(); // Ensures unknown commands don't return null
         }
     }
-
 }
